@@ -8,5 +8,5 @@ switch ($argv[1]) {
         break;
     default:
         print "Unknown command '{$argv[1]}'\n";
-        print "For creating new application run: php manage.php startapp <your_application_name>\n";
+        print "For creating new application run: php manage.php startapp <my_app>\n";
 }
