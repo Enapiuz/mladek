@@ -8,4 +8,12 @@ final class http
     {
         print $text;
     }
+
+    static function response404($text)
+    {
+        Header('');
+        print 'Error 404. ';
+        print $text;
+    }
+
 }
