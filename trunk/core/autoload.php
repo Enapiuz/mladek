@@ -1,15 +1,15 @@
 <?php
 function __autoload($class)
 {
-//    print $class.'---';
-    static $project_dir_name, $project_name;
+//     print $class.'---';
+    static $project_dir_name, $project_name, $project_dir;
 
     if (0 === strpos($class, 'mladek')) {
         // autoload for mladek classes
         $path = __DIR__.'/../../';
     } else {
         if (!isset($project_dir_name)) {
-            $project_dir = mladek::core::conf::get('PROJECT_DIR');
+            $project_dir = mladek::conf::conf::get('PROJECT_DIR');
             if (false !== $pos1 = strrpos(str_replace(DIRECTORY_SEPARATOR, '/', $project_dir), '/')) {
                 $project_dir_name = substr($project_dir, $pos1+1);
             }
@@ -25,6 +25,11 @@ function __autoload($class)
             $path = '';
         }
     }
-
-    include_once realpath($path.str_replace('::', '/', $class).'.php');
+    $class = preg_replace('/::[^(::)]+$/', '', $class);
+    $init_path = realpath($path.str_replace('::', '/', $class).'/__init__.php');
+    if ($init_path) {
+        include_once $init_path;
+    } else {
+        include_once realpath($path.str_replace('::', '/', $class).'.php');
+    }
 }
