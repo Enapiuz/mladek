@@ -1,5 +1,5 @@
 <?php
-use mladek::core::conf;
+use mladek::conf::conf;
 
 define('MLADEK_DIR', ''); # without slash on end
 

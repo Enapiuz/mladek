@@ -1,19 +1,16 @@
 <?php
-namespace my_project::my_app;
-use mladek::core::http;
-use mladek::core::urls;
+namespace my_project::my_app::views;
+use mladek::http::HttpResponse;
+use mladek::conf::urls::urls;
 
 
-class views
+function my_method()
 {
-    static function my_method()
-    {
-        return http::response('Hello World!');
-    }
-    
-    static function article($id)
-    {
-        $text = 'You see article on url '.urls::reverse('article', $id);
-        return http::response($text);
-    }
+    return new HttpResponse('Hello World!');
+}
+
+function article($id)
+{
+    $text = 'You see article on url '.urls::reverse('article', $id);
+    return new HttpResponse($text);
 }

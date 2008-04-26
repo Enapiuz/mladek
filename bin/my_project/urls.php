@@ -1,5 +1,5 @@
 <?php
-use mladek::core::urls;
+use mladek::conf::urls::urls;
 
 urls::patterns(array(
 
