@@ -6,6 +6,8 @@ final class urls
 {
 
     static $urls = array();
+    static $path = '';
+    static $deep = 0;
 
     static function getPath()
     {
@@ -18,18 +20,17 @@ final class urls
     
     static function patterns($args = array())
     {
-        static $deep = 0;
-        $deep++;
+        self::$deep++;
         foreach ($args as $pattern) {
             if (is_array($pattern[1])) {
-                foreach (self::$urls[($deep-1)] as $url) {
+                foreach (self::$urls[(self::$deep-1)] as $url) {
                     $url[0] = $pattern[0].substr($url[0], 1);
                     $url[1] = $pattern[1][0].'::'.$url[1];
-                    self::$urls[$deep][] = $url;
-                    unset(self::$urls[($deep-1)]);
+                    self::$urls[self::$deep][] = $url;
+                    unset(self::$urls[(self::$deep-1)]);
                 }
             } else {
-                self::$urls[$deep][] = $pattern;
+                self::$urls[self::$deep][] = $pattern;
             }
          }
     }
@@ -37,16 +38,17 @@ final class urls
     static function route()
     {
         self::$urls = array_shift(self::$urls);
-        print_r(nl2br(print_r(self::$urls, true)));
+//        print_r(nl2br(print_r(self::$urls, true)));
         $path = self::getPath();
         foreach (self::$urls as $url) {
             $url[0] = str_replace('^', '^/', $url[0]);
-            $url[0] = str_replace('/', '\\/', $url[0]);
-            if (preg_match('/'.$url[0].'/', $path)) {
-                if (!isset($url[2]) or !is_array($url[2])) {
-                    $url[2] = array();
+            $url[0] = str_replace('/', '\/', $url[0]);
+            if (preg_match('/'.$url[0].'/', $path, $params)) {
+                array_shift($params);
+                if (isset($url[2]) and is_array($url[2])) {
+                    $params = array_merge($url[2], $params);
                 }
-                if (false === call_user_func_array($url[1], $url[2])) {
+                if (false === call_user_func_array($url[1], $params)) {
                     throw new ErrorException("Called views '$url[1]' not available.");
                 }
                 return;
@@ -68,7 +70,7 @@ final class urls
                 $needed_params = substr_count($url[0], '(');
                 $provided_params = count($params);
                 if ($needed_params > $provided_params) {
-                    throw new ErrorException(sprintf('Route %s needs %s parameters. Only %s provided.', $name, $needed_params, $provided_params));
+                    throw new ErrorException(sprintf('Route %s needs %s parameters. %s provided.', $name, $needed_params, $provided_params));
                 }
                 $link = str_replace('^', '/', substr($link, 0, -1));
                 return $link;
@@ -79,9 +81,12 @@ final class urls
         
     static function inc($namespace_path)
     {
-        $file = realpath(conf::get('PROJECT_DIR').'/../'.str_replace('::', '/', $namespace_path).'.php');
+        $prefix = preg_replace('/::[^(::).]+$/', '', $namespace_path);
+        $suffix = preg_replace('/^.+::/', '', $namespace_path);
+        self::$path .= str_replace('::', '/', $prefix).'/';
+        $file = realpath(conf::get('PROJECT_DIR').'/../'.self::$path.$suffix.'.php');
         if (include_once $file) {
-            return array(preg_replace('/::[^(::).]+$/', '', $namespace_path));
+            return array($prefix);
         } else {
             throw new ErrorException('Error when include file '.$file);
         }
