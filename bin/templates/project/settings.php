@@ -1,7 +1,7 @@
 <?php
 use mladek::core::conf;
 
-define('MLADEK_DIR', 'D:/svn/mladek'); # without slash on end
+define('MLADEK_DIR', ''); # without slash on end
 
 require_once MLADEK_DIR.'/core/autoload.php';
 
