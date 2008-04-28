@@ -1,12 +1,14 @@
 <?php
 namespace mladek::http;
 
+
 final class HttpRequest
 {
     public $GET = array();
     public $POST = array();
     public $FILES = array();
     public $REQUEST = array();
+    public $COOKIE = array();
 
     public function __construct()
     {
@@ -37,7 +39,6 @@ class HttpResponse
 
 final class Http404 extends HttpResponse
 {
-    
     public function render()
     {
         Header('');
@@ -45,3 +46,15 @@ final class Http404 extends HttpResponse
         parent::render();
     }
 }
+
+
+
+final class HttpResponseRedirect extends HttpResponse
+{
+    public function render()
+    {
+        Header('Location: '.$this->body);
+        exit;
+    }
+}
+
