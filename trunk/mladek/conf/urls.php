@@ -1,6 +1,6 @@
 <?php
 namespace mladek::conf::urls;
-use mladek::conf::conf;
+use mladek::settings;
 
 final class urls
 {
@@ -12,7 +12,7 @@ final class urls
     static function getPath()
     {
         return str_replace(
-                            conf::get('REWRITE_BASE').'/',
+                            settings::REWRITE_BASE.'/',
                             '/',
                             parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
                             );
@@ -77,7 +77,7 @@ final class urls
         $prefix = preg_replace('/::[^(::).]+$/', '', $namespace_path);
         $suffix = preg_replace('/^.+::/', '', $namespace_path);
         self::$path .= str_replace('::', '/', $prefix).'/';
-        $file = realpath(conf::get('PROJECT_DIR').'/../'.self::$path.$suffix.'.php');
+        $file = realpath(settings::PROJECT_DIR.'/../'.self::$path.$suffix.'.php');
         if (include_once $file) {
             return array($prefix);
         } else {

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/../utils/filesystem.php';
+$argv = $_SERVER['argv'];
 
 switch ($argv[1]) {
     case 'startproject':

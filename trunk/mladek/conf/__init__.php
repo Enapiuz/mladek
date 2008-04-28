@@ -1,18 +1,19 @@
 <?php
 namespace mladek::conf;
 
+
 final class conf
 {
-    static $conf = array();
+    static $settings = array();
 
     static function set($param, $value)
     {
-        self::$conf[$param] = $value;
+        self::$settings[$param] = $value;
     }
 
     static function get($param)
     {
-        return self::$conf[$param];
+        return self::$settings[$param];
     }
     
     static function add_include_path($path)
